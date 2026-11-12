@@ -7,12 +7,13 @@
         "php": ">=8.4"
     },
     "require-dev": {
-        "david-grosskost/suitecrm-devkit": "^0.21"
+        "david-grosskost/suitecrm-devkit": "^0.21.3"
     },
     "autoload-dev": {
-        "classmap": ["legacy/include/"],
         "psr-4": {
-            "SuiteCrmExt\\Exemple\\Tests\\": "tests/"
+            "SuiteCrmExt\\OpportunityReminders\\": "legacy/include/opportunity-reminders/",
+            "SuiteCrmExt\\OpportunityReminders\\Seed\\": "database/seeders/opportunity-reminders/",
+            "SuiteCrmExt\\OpportunityReminders\\Tests\\": "tests/"
         }
     },
     "repositories": [
