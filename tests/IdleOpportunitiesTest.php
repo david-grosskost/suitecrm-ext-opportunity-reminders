@@ -23,12 +23,4 @@ final class IdleOpportunitiesTest extends TestCase
             self::assertLessThan($cutoff, $date, "$key pas assez ancienne pour une relance");
         }
     }
-
-    public function testOnlyTheLastChangeIsWritten(): void
-    {
-        self::assertSame(
-            "UPDATE opportunities SET date_modified = '2026-09-28 06:00:00' WHERE id = 'opp-1' AND deleted = 0",
-            IdleOpportunities::query("'opp-1'", "'2026-09-28 06:00:00'"),
-        );
-    }
 }

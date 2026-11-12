@@ -72,5 +72,10 @@ namespace SuiteCrmCore\Seed {
         public static function id(string $module, string $key): string
         {
         }
+
+        /** @param array<string, string|int|null> $fields */
+        public function update(\SugarBean $bean, array $fields): void
+        {
+        }
     }
 }
