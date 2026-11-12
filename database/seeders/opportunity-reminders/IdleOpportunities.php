@@ -32,10 +32,4 @@ final class IdleOpportunities
 
         return $dates;
     }
-
-    /** $id and $date are already quoted. */
-    public static function query(string $id, string $date): string
-    {
-        return "UPDATE opportunities SET date_modified = {$date} WHERE id = {$id} AND deleted = 0";
-    }
 }
