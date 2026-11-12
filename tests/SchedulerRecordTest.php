@@ -17,6 +17,8 @@ final class SchedulerRecordTest extends TestCase
         self::assertSame('function::opportunityReminders', $fields['job']);
         self::assertSame('0::7::*::*::*', $fields['job_interval']);
         self::assertSame('Active', $fields['status']);
+        // Not at once on the first activation: only at 7:00.
+        self::assertSame('0', $fields['catch_up']);
         self::assertNull($fields['date_time_end']);
     }
 

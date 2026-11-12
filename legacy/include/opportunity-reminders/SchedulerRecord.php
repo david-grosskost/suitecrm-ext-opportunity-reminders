@@ -32,8 +32,10 @@ final class SchedulerRecord
             'date_time_start' => '2026-01-01 00:00:01',
             'date_time_end' => null,
             'status' => 'Active',
-            // A morning missed (server stopped at 7:00): run once when it is back.
-            'catch_up' => '1',
+            // Only at 7:00: catching up would run it at once on the first
+            // activation (7:00 of that day counts as missed), before the
+            // administrator has set the delay.
+            'catch_up' => '0',
             'created_by' => '1',
             'modified_user_id' => '1',
         ];
