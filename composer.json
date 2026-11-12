@@ -1,6 +1,6 @@
 {
-    "name": "david-grosskost/suitecrm-ext-exemple",
-    "description": "Extension d'exemple du modèle des extensions SuiteCRM.",
+    "name": "david-grosskost/suitecrm-ext-opportunity-reminders",
+    "description": "Relances des opportunités SuiteCRM : une tâche pour le commercial quand une opportunité ouverte n'a pas bougé depuis un nombre de jours réglable.",
     "type": "suitecrm-extension",
     "license": "proprietary",
     "require": {
