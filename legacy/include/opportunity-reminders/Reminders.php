@@ -117,13 +117,24 @@ final class Reminders
         $language = is_array($config) && is_string($config['default_language'] ?? null) ? $config['default_language'] : 'en_us';
         $strings = \return_application_language($language);
 
-        $label = static function (string $key) use ($strings): string {
-            $value = $strings[$key] ?? null;
+        return [
+            'name' => self::label($strings, 'LBL_OR_TASK_NAME'),
+            'description' => self::label($strings, 'LBL_OR_TASK_DESCRIPTION'),
+        ];
+    }
 
-            return is_string($value) && $value !== '' ? $value : self::LABELS[$key];
-        };
+    /**
+     * A label of the instance, or the default text (a method, not a closure:
+     * the scanner of the Module Loader refuses the calls of a variable).
+     *
+     * @param array<string, mixed> $strings
+     * @param key-of<self::LABELS> $key
+     */
+    private static function label(array $strings, string $key): string
+    {
+        $value = $strings[$key] ?? null;
 
-        return ['name' => $label('LBL_OR_TASK_NAME'), 'description' => $label('LBL_OR_TASK_DESCRIPTION')];
+        return is_string($value) && $value !== '' ? $value : self::LABELS[$key];
     }
 
     /** @param array<array-key, mixed> $row */

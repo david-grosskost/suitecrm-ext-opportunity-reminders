@@ -6,6 +6,9 @@
 // tasks it created and the number of days stay. Reactivated, the extension
 // creates the scheduler again.
 
+// Its message is returned, not printed (echo is refused by the scanner of
+// the Module Loader): the caller shows it.
+
 declare(strict_types=1);
 
 use SuiteCrmExt\OpportunityReminders\SchedulerRecord;
@@ -22,4 +25,4 @@ while (is_array($row = $db->fetchByAssoc($result))) {
         ++$deleted;
     }
 }
-echo "  opportunity-reminders : {$deleted} planificateur(s) supprimé(s).\n";
+return "opportunity-reminders : {$deleted} planificateur(s) supprimé(s).";
