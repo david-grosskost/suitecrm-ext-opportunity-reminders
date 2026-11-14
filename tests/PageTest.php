@@ -18,9 +18,12 @@ final class PageTest extends TestCase
         'LBL_OR_RUN' => 'Enregistrer et lancer maintenant',
     ];
 
-    /** @var list<int> */
-    private array $saved = [];
-    private int $runs = 0;
+    private RecordingActions $actions;
+
+    protected function setUp(): void
+    {
+        $this->actions = new RecordingActions();
+    }
 
     /**
      * @param array<string, string> $post
@@ -32,14 +35,7 @@ final class PageTest extends TestCase
         return Page::handle(
             $post,
             30,
-            function (int $days): void {
-                $this->saved[] = $days;
-            },
-            function (): int {
-                ++$this->runs;
-
-                return 3;
-            },
+            $this->actions,
             self::LABELS,
         );
     }
@@ -47,16 +43,16 @@ final class PageTest extends TestCase
     public function testDisplayingThePageChangesNothing(): void
     {
         self::assertSame(['days' => '30', 'messages' => []], $this->handle([]));
-        self::assertSame([], $this->saved);
-        self::assertSame(0, $this->runs);
+        self::assertSame([], $this->actions->saved);
+        self::assertSame(0, $this->actions->runs);
     }
 
     public function testSaveKeepsTheDays(): void
     {
         $state = $this->handle(['or_days' => '45', 'or_save' => 'Enregistrer']);
 
-        self::assertSame([45], $this->saved);
-        self::assertSame(0, $this->runs);
+        self::assertSame([45], $this->actions->saved);
+        self::assertSame(0, $this->actions->runs);
         self::assertSame(['days' => '45', 'messages' => [['notice', 'Réglage enregistré : relance après 45 jours.']]], $state);
     }
 
@@ -64,8 +60,8 @@ final class PageTest extends TestCase
     {
         $state = $this->handle(['or_days' => '10', 'or_run' => 'Lancer']);
 
-        self::assertSame([10], $this->saved);
-        self::assertSame(1, $this->runs);
+        self::assertSame([10], $this->actions->saved);
+        self::assertSame(1, $this->actions->runs);
         self::assertSame(['notice', 'Relances lancées : 3 tâche(s) créée(s).'], $state['messages'][1] ?? null);
     }
 
@@ -73,8 +69,8 @@ final class PageTest extends TestCase
     {
         $state = $this->handle(['or_days' => '0', 'or_run' => 'Lancer']);
 
-        self::assertSame([], $this->saved);
-        self::assertSame(0, $this->runs);
+        self::assertSame([], $this->actions->saved);
+        self::assertSame(0, $this->actions->runs);
         self::assertSame(['days' => '0', 'messages' => [['error', 'Nombre de jours invalide.']]], $state);
     }
 

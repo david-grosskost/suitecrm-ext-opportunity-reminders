@@ -7,6 +7,9 @@
 // administrator. From then on the scheduler belongs to the administrator:
 // hours changed or made inactive, it is left as is.
 
+// Its message is returned, not printed (echo is refused by the scanner of
+// the Module Loader): the caller shows it.
+
 declare(strict_types=1);
 
 use SuiteCrmExt\OpportunityReminders\SchedulerRecord;
@@ -15,9 +18,7 @@ require_once __DIR__ . '/../legacy/include/opportunity-reminders/SchedulerRecord
 
 $db = DBManagerFactory::getInstance();
 if (is_array($db->fetchByAssoc($db->query(SchedulerRecord::query($db->quoted(SchedulerRecord::JOB)))))) {
-    echo "  opportunity-reminders : planificateur déjà là, rien à faire.\n";
-
-    return;
+    return 'opportunity-reminders : planificateur déjà là, rien à faire.';
 }
 
 /** @var mixed $config */
@@ -34,4 +35,4 @@ foreach (SchedulerRecord::fields($name) as $field => $value) {
     $scheduler->{$field} = $value;
 }
 $scheduler->save();
-echo "  opportunity-reminders : planificateur « {$name} » créé (chaque jour à 7 h).\n";
+return "opportunity-reminders : planificateur « {$name} » créé (chaque jour à 7 h).";

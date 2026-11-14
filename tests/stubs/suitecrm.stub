@@ -6,8 +6,22 @@
 // the seed runner of suitecrm-core (database/seeders/src).
 
 namespace {
+    class Sugar_Smarty
+    {
+        public function assign(string $name, mixed $value): void
+        {
+        }
+
+        public function display(?string $template = null): void
+        {
+        }
+    }
+
     class SugarView
     {
+        /** @var Sugar_Smarty Set by init() */
+        public $ss;
+
         /** @param array<mixed> $view_object_map */
         public function __construct(?SugarBean $bean = null, array $view_object_map = [])
         {

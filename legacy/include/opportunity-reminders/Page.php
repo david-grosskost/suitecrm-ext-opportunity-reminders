@@ -33,13 +33,11 @@ final class Page
      * saved then the reminders run on "Lancer maintenant".
      *
      * @param array<array-key, mixed> $post
-     * @param callable(int): void $save
-     * @param callable(): int $run Tasks created
      * @param array<array-key, mixed> $labels
      *
      * @return array{days: string, messages: list<array{string, string}>} Days to show (as typed when wrong), messages (type, text)
      */
-    public static function handle(array $post, int $stored, callable $save, callable $run, array $labels): array
+    public static function handle(array $post, int $stored, PageActions $actions, array $labels): array
     {
         $saving = isset($post['or_save']);
         $running = isset($post['or_run']);
@@ -56,10 +54,10 @@ final class Page
             ];
         }
 
-        $save($days);
+        $actions->save($days);
         $messages = [['notice', sprintf(self::label($labels, 'LBL_OR_SAVED'), $days)]];
         if ($running) {
-            $messages[] = ['notice', sprintf(self::label($labels, 'LBL_OR_RAN'), $run())];
+            $messages[] = ['notice', sprintf(self::label($labels, 'LBL_OR_RAN'), $actions->run())];
         }
 
         return ['days' => (string) $days, 'messages' => $messages];
@@ -73,37 +71,53 @@ final class Page
      */
     public static function html(string $days, array $messages, array $labels): string
     {
-        $e = static fn(string $text): string => htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
-        $l = static fn(string $key): string => $e(self::label($labels, $key));
-
         $html = '';
         foreach ($messages as [$type, $text]) {
             $class = $type === 'error' ? 'error' : 'msg';
-            $html .= "<p class=\"{$class}\">{$e($text)}</p>\n";
+            $html .= "<p class=\"{$class}\">" . self::escape($text) . "</p>\n";
         }
 
         $action = self::ACTION;
         $min = Settings::MIN_DAYS;
         $max = Settings::MAX_DAYS;
+        // Texts escaped beforehand, not by closures in the heredoc: the scanner
+        // of the Module Loader refuses the calls of a variable ($l()).
+        $value = self::escape($days);
+        $intro = self::text($labels, 'LBL_OR_PAGE_INTRO');
+        $daysLabel = self::text($labels, 'LBL_OR_DAYS');
+        $help = self::text($labels, 'LBL_OR_DAYS_HELP');
+        $saveLabel = self::text($labels, 'LBL_OR_SAVE');
+        $runLabel = self::text($labels, 'LBL_OR_RUN');
 
         return $html . <<<HTML
-            <p>{$l('LBL_OR_PAGE_INTRO')}</p>
+            <p>{$intro}</p>
             <form method="post" action="index.php?module=Administration&amp;action={$action}">
                 <input type="hidden" name="module" value="Administration">
                 <input type="hidden" name="action" value="{$action}">
                 <table class="edit view" width="100%" cellspacing="1" cellpadding="0" border="0">
                     <tr>
-                        <td scope="row" width="25%"><label for="or_days">{$l('LBL_OR_DAYS')}</label></td>
+                        <td scope="row" width="25%"><label for="or_days">{$daysLabel}</label></td>
                         <td>
-                            <input type="number" id="or_days" name="or_days" min="{$min}" max="{$max}" step="1" required value="{$e($days)}">
-                            <span>{$l('LBL_OR_DAYS_HELP')}</span>
+                            <input type="number" id="or_days" name="or_days" min="{$min}" max="{$max}" step="1" required value="{$value}">
+                            <span>{$help}</span>
                         </td>
                     </tr>
                 </table>
-                <input type="submit" class="button primary" name="or_save" value="{$l('LBL_OR_SAVE')}">
-                <input type="submit" class="button" name="or_run" value="{$l('LBL_OR_RUN')}">
+                <input type="submit" class="button primary" name="or_save" value="{$saveLabel}">
+                <input type="submit" class="button" name="or_run" value="{$runLabel}">
             </form>
             HTML;
+    }
+
+    private static function escape(string $text): string
+    {
+        return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+    }
+
+    /** @param array<array-key, mixed> $labels */
+    private static function text(array $labels, string $key): string
+    {
+        return self::escape(self::label($labels, $key));
     }
 
     /** @param array<array-key, mixed> $labels */

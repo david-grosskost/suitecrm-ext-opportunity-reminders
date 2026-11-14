@@ -50,6 +50,15 @@ final class DefinitionsTest extends TestCase
         self::assertFileExists(__DIR__ . '/../legacy/include/opportunity-reminders/SettingsPage.php');
     }
 
+    public function testThePageTemplateIsWhereTheViewLooksForIt(): void
+    {
+        // PageView::TEMPLATE, not loaded here (it needs SuiteCRM's SugarView).
+        $view = (string) file_get_contents(__DIR__ . '/../legacy/include/opportunity-reminders/PageView.php');
+
+        self::assertStringContainsString("TEMPLATE = 'custom/include/opportunity-reminders/page.tpl'", $view);
+        self::assertFileExists(__DIR__ . '/../legacy/include/opportunity-reminders/page.tpl');
+    }
+
     public function testTheAdministrationPageLinksToIt(): void
     {
         $groups = self::load('modules/Administration/Ext/Administration/opportunity-reminders.php', 'admin_group_header');

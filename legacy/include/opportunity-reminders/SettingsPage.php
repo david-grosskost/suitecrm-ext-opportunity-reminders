@@ -9,12 +9,14 @@
 declare(strict_types=1);
 
 use SuiteCrmExt\OpportunityReminders\Page;
+use SuiteCrmExt\OpportunityReminders\PageActions;
 use SuiteCrmExt\OpportunityReminders\PageView;
 use SuiteCrmExt\OpportunityReminders\Reminders;
 use SuiteCrmExt\OpportunityReminders\Settings;
 
 require_once __DIR__ . '/Settings.php';
 require_once __DIR__ . '/Reminders.php';
+require_once __DIR__ . '/PageActions.php';
 require_once __DIR__ . '/Page.php';
 // SuiteCRM's own view first (the current directory is public/legacy), then ours.
 require_once getcwd() . '/include/MVC/View/SugarView.php';
@@ -34,10 +36,17 @@ $labels = is_array($labels) ? $labels : [];
 $state = Page::handle(
     $_SERVER['REQUEST_METHOD'] === 'POST' ? $_POST : [],
     Settings::read(),
-    static function (int $days): void {
-        Settings::save($days);
+    new class implements PageActions {
+        public function save(int $days): void
+        {
+            Settings::save($days);
+        }
+
+        public function run(): int
+        {
+            return Reminders::run();
+        }
     },
-    static fn(): int => Reminders::run(),
     $labels,
 );
 
