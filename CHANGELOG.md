@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/david-grosskost/suitecrm-ext-opportunity-reminders/compare/v0.1.1...v0.1.2) (2026-11-14)
+
+
+### Bug Fixes
+
+* pass the Module Loader scanner ([#8](https://github.com/david-grosskost/suitecrm-ext-opportunity-reminders/issues/8)) ([77be21b](https://github.com/david-grosskost/suitecrm-ext-opportunity-reminders/commit/77be21b2f1ee51a5c030011f2dcea58103334c6d))
+
 ## [0.1.1](https://github.com/david-grosskost/suitecrm-ext-opportunity-reminders/compare/v0.1.0...v0.1.1) (2026-11-12)
 
 
