@@ -2,9 +2,9 @@
 
 // Install script of opportunity-reminders: creates the line « Relances des
 // opportunités » of Administration → Planificateur (each day at 7:00). Run
-// once, at the first activation, after Quick Repair has merged the job
-// (suitecrm-core, scripts/extension-script.php), in SuiteCRM, as the
-// administrator. From then on the scheduler belongs to the administrator:
+// once, at the first installation, after Quick Repair has merged the job
+// (post_install of the Module Loader package, see suitecrm-devkit, make
+// package@build), in SuiteCRM, as the administrator. From then on the scheduler belongs to the administrator:
 // hours changed or made inactive, it is left as is.
 
 // Its message is returned, not printed (echo is refused by the scanner of
